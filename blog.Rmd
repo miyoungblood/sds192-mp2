@@ -1,17 +1,26 @@
 ---
-title: "Mini-Project 2"
-author: "Your Name Here"
-date: "March 24, 2017"
+title: "Untitled"
 output: html_document
 ---
 
-
-## Loading the data
-
-
-```{r, include=FALSE}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 ```
+
+##
+We want to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from for-profit corporations since the decision. If there has been a notable increase, has a particular party benefitted disproportionally, how has the money been channeled to campaigns – individual candidates, PACs, etc since 2010?
+
+```{r}
+```
+
+##
+
+
+```{r}
+
+```
+
