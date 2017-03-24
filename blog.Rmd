@@ -1,14 +1,17 @@
 ---
-title: "Untitled"
+title: "Mini-Project 2"
+authors: "Marisa Youngblood, Tara Marin, and Jordan Moody"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
+load("individuals.rda")
 ```
 
 ##
@@ -18,9 +21,25 @@ We want to see what trends or patterns have emerged since the Citizens United ca
 ```
 
 ##
-
+In the most recently presidential election, both Bernie Sanders and Donald Trump's campaigns received a surge of support from individuals donating small amounts rather than corporate donors and super PACs, demonstrating grassroots appeal. We want to see what % of their funding came from small donors and compare that to the % that came from other sources using a bar graph. 
 
 ```{r}
+small_individual <- individuals %>%
+  filter(transaction_amt >= 1, transaction_amt <= 200)
 
+#Filtering for small individual donations under $200
+
+small_committees <- committees %>%
+  inner_join(small_individual, by = "cmte_id")
+
+#Using inner_join function to connect individual donations to their corresponding committee 
 ```
 
+###Grading Rubric
+- Using at least two of the five basic verbs
+- Annotating
+- Writing a function
+- Using at least one join
+- Blog post text
+- Using GitHub
+- Issues tab
