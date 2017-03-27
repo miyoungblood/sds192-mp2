@@ -35,3 +35,30 @@ outside_spending <- committees %>%
 #Filtering for "independent" outside committees.  
 ```
 
+```{r}
+committee_spending <- candidate_spending %>%
+  inner_join(contributions, by = "cmte_id")
+
+cand_party <- committee_spending %>%
+  filter(!is.na(cmte_party_affiliation)) %>%
+  group_by(cmte_party_affiliation) %>%
+  summarize(N = n(),
+            spending = sum(transaction_amt)) %>%
+  select(cmte_party_affiliation, N, spending)
+  
+#Grouping by parties for candidate spending
+```
+```{r}
+ind_spending <- outside_spending %>%
+  inner_join(contributions, by = "cmte_id")
+  
+ind_party <- ind_spending %>%
+  filter(!is.na(cmte_party_affiliation)) %>%
+  group_by(cmte_party_affiliation) %>%
+  summarize(N = n(), 
+            spending = sum(transaction_amt)) %>%
+  select(cmte_party_affiliation, N, spending)
+
+#Grouping by parties for independent spending
+```
+
