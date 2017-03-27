@@ -9,13 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
 library(RColorBrewer)
-library(ggthemes)
 library(tidyverse)
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
-load("individuals.rda")
 ```
 
 ##
@@ -29,7 +27,7 @@ committee_contributions <- right_join(committees, contributions, by = "cmte_id")
 
 candidate_spending <- committee_contributions %>%
   select(cmte_id, cmte_name, cmte_type, cmte_party_affiliation, transaction_amt) %>%
-  filter(cmte_type %in% c('P', 'S', 'H')) %>%
+  filter(cmte_type %in% c('P', 'S', 'H'))
 #Filtering for political campaign commitees from FEC Committee Type Codes.
 
   
@@ -45,20 +43,18 @@ committee_spending <- candidate_spending %>%
   inner_join(contributions, by = "cmte_id")
 
 cand_party <- committee_spending %>%
-  filter(!is.na(cmte_party_affiliation)) %>%
+  filter(cmte_party_affiliation %in% c("DEM", "REP")) %>%
   group_by(cmte_party_affiliation) %>%
   summarize(N = n(),
-            spending = sum(transaction_amt)) %>%
+            spending = sum(transaction_amt.x) + sum(transaction_amt.y)) %>%
   select(cmte_party_affiliation, spending)
   
 #Grouping by parties for candidate spending
 ```
-```{r}
-ind_spending <- outside_spending %>%
-  inner_join(contributions, by = "cmte_id")
-  
-ind_party <- ind_spending %>%
-  filter(!is.na(cmte_party_affiliation)) %>%
+
+```{r}  
+ind_party <- outside_spending %>%
+  filter(cmte_party_affiliation %in% c("DEM", "REP")) %>%
   group_by(cmte_party_affiliation) %>%
   summarize(N = n(), 
             spending = sum(transaction_amt)) %>%
@@ -74,4 +70,12 @@ spending <- ind_party %>%
   gather(key = "spending", value = "amt", -cmte_party_affiliation)
 
 #Joining spending into one master table to graph
+```
+
+```{r}
+ggplot(spending, aes(x = cmte_party_affiliation, y = amt, fill = spending)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Party Affiliation") + ylab("Total Transaction Amount") +
+  scale_fill_discrete(name = "Spending Type", labels = c("Candidate", "Independent")) +
+  theme_bw()
 ```
