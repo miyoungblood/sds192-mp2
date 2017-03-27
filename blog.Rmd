@@ -49,7 +49,7 @@ cand_party <- committee_spending %>%
   group_by(cmte_party_affiliation) %>%
   summarize(N = n(),
             spending = sum(transaction_amt)) %>%
-  select(cmte_party_affiliation, N, spending)
+  select(cmte_party_affiliation, spending)
   
 #Grouping by parties for candidate spending
 ```
@@ -62,8 +62,16 @@ ind_party <- ind_spending %>%
   group_by(cmte_party_affiliation) %>%
   summarize(N = n(), 
             spending = sum(transaction_amt)) %>%
-  select(cmte_party_affiliation, N, spending)
+  select(cmte_party_affiliation, spending)
 
 #Grouping by parties for independent spending
 ```
 
+```{r}
+spending <- ind_party %>%
+  inner_join(cand_party, by = "cmte_party_affiliation") %>%
+  rename(ind_spending = spending.x, cand_spending = spending.y) %>%
+  gather(key = "spending", value = "amt", -cmte_party_affiliation)
+
+#Joining spending into one master table to graph
+```
