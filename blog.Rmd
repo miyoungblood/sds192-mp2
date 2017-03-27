@@ -6,6 +6,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(ggthemes)
 library(tidyverse)
 load("house_elections.rda")
 load("candidates.rda")
@@ -15,31 +19,19 @@ load("individuals.rda")
 ```
 
 ##
-We want to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from for-profit corporations since the decision. If there has been a notable increase, has a particular party benefitted disproportionally, how has the money been channeled to campaigns – individual candidates, PACs, etc since 2010?
+We want to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from outside spenders compared to the campaign committees themselves? If there has been a notable increase, has a particular party benefitted disproportionally?
 
 ```{r}
+candidate_spending <- committees %>%
+  select(cmte_id, cmte_name, cmte_state, cmte_type, cmte_party_affiliation, cand_id) %>%
+  filter(cmte_type %in% c('P', 'S', 'H'))
+
+#Filtering for political campaign commitees from FEC Committee Type Codes.
+
+outside_spending <- committees %>%
+  select(cmte_id, cmte_name, cmte_state, cmte_type, cmte_party_affiliation, cand_id) %>%
+  filter(cmte_type %in% c('C', 'D', 'E', 'I', 'N', 'O', 'Q', 'U', 'V', 'W', 'X', 'Y', 'Z'))
+
+#Filtering for "independent" outside committees.  
 ```
 
-##
-In the most recently presidential election, both Bernie Sanders and Donald Trump's campaigns received a surge of support from individuals donating small amounts rather than corporate donors and super PACs, demonstrating grassroots appeal. We want to see what % of their funding came from small donors and compare that to the % that came from other sources using a bar graph. 
-
-```{r}
-small_individual <- individuals %>%
-  filter(transaction_amt >= 1, transaction_amt <= 200)
-
-#Filtering for small individual donations under $200
-
-small_committees <- committees %>%
-  inner_join(small_individual, by = "cmte_id")
-
-#Using inner_join function to connect individual donations to their corresponding committee 
-```
-
-###Grading Rubric
-- Using at least two of the five basic verbs
-- Annotating
-- Writing a function
-- Using at least one join
-- Blog post text
-- Using GitHub
-- Issues tab
