@@ -16,8 +16,10 @@ load("committees.rda")
 load("contributions.rda")
 ```
 
-##
-We want to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from outside spenders compared to the campaign committees themselves? If there has been a notable increase, has a particular party benefitted disproportionally?
+###Introduction
+For our project, we wanted to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from outside spenders (independent expenditures by committees outside of the campaigns themselves) since the decision and how does this compare to the contributions to campaign committees themselves? If there has been a notable increase, has a particular party benefitted disproportionately?
+
+This case has resulted in the creation of super PACs, which can accept unlimited contributions from individuals, corporations, and unions. Often these committees are only nominally independent from the candidates they support and operate parallel to their campaign. Additionally, donors are not required to be publicly disclosed - spending known as "dark money". Conversely, in the year 2012, independent committees could give no more than $5000 to official campaign committees.
 
 ```{r}
 committee_contributions <- right_join(committees, contributions, by = "cmte_id") %>%
@@ -79,3 +81,9 @@ ggplot(spending, aes(x = cmte_party_affiliation, y = amt, fill = spending)) +
   scale_fill_discrete(name = "Spending Type", labels = c("Candidate", "Independent")) +
   theme_bw()
 ```
+
+###Analysis
+Overall, independent committees spent $1,205,546,885 less in total than the candidates themselves in the 2011-2012 federal election cycle. Among Democrats and Republicans, Democratic committees spent significantly more, while more money was given from independent committees to Republican campaigns.
+
+###Conclusion
+The results found are surprising as the prominent narrative that arose when the Citizens United case was decided indicated that independent committee spending would dramatically increase. Further analysis we would like to conduct would compare campaign financing previous to the 2010 decision and after.
