@@ -22,16 +22,21 @@ load("individuals.rda")
 We want to see what trends or patterns have emerged since the Citizens United case was decided in 2010. In particular, what has happened to political contributions from outside spenders compared to the campaign committees themselves? If there has been a notable increase, has a particular party benefitted disproportionally?
 
 ```{r}
-candidate_spending <- committees %>%
-  select(cmte_id, cmte_name, cmte_state, cmte_type, cmte_party_affiliation, cand_id) %>%
-  filter(cmte_type %in% c('P', 'S', 'H'))
+committee_contributions <- right_join(committees, contributions, by = "cmte_id") %>%
+  select(cmte_id, cmte_name, cmte_party_affiliation, cmte_type, transaction_amt)
+#Joining the two data frames to connect committee types to their contributions. 
 
+
+candidate_spending <- committee_contributions %>%
+  select(cmte_id, cmte_name, cmte_type, cmte_party_affiliation, transaction_amt) %>%
+  filter(cmte_type %in% c('P', 'S', 'H')) %>%
 #Filtering for political campaign commitees from FEC Committee Type Codes.
 
-outside_spending <- committees %>%
-  select(cmte_id, cmte_name, cmte_state, cmte_type, cmte_party_affiliation, cand_id) %>%
+  
+outside_spending <- committee_contributions %>%
+  select(cmte_id, cmte_name, cmte_type, cmte_party_affiliation, transaction_amt) %>%
   filter(cmte_type %in% c('C', 'D', 'E', 'I', 'N', 'O', 'Q', 'U', 'V', 'W', 'X', 'Y', 'Z'))
-
 #Filtering for "independent" outside committees.  
+
 ```
 
